@@ -25,11 +25,9 @@ server.post("/api/users", async (req, res) => {
    res.status(201).json(newUser);
   }
  } catch (err) {
-  res
-   .status(500)
-   .json({
-    message: "There was an error while saving the user to the database",
-   });
+  res.status(500).json({
+   message: "There was an error while saving the user to the database",
+  });
  }
 });
 
@@ -61,6 +59,23 @@ server.get("/api/users/:id", async (req, res) => {
   res
    .status(500)
    .json({ message: "The user information could not be retrieved" });
+ }
+});
+
+server.delete("/api/users/:id", async (req, res) => {
+ try {
+  const { id } = req.params;
+  const user = await Users.findById(id);
+  if (!user) {
+   res
+    .status(404)
+    .json({ message: "The user with the specified ID does not exist" });
+  } else {
+   const deletedUser = await Users.remove(user.id);
+   res.json(deletedUser);
+  }
+ } catch (err) {
+  res.status(500).json({ message: "The user could not be removed" });
  }
 });
 
